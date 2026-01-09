@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Recruitment & ATS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-10">
+    <div class="max-w-5xl mx-auto bg-white p-8 rounded-lg shadow-xl">
+        <h1 class="text-3xl font-bold mb-6 text-blue-700">Revolutionary Talent Acquisition</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block font-bold mb-2">Job Description (JD)</label>
+                <textarea id="jd" class="w-full h-32 p-2 border rounded mb-4" placeholder="Paste JD here..."></textarea>
+                
+                <label class="block font-bold mb-2">Candidate Resume</label>
+                <textarea id="resume" class="w-full h-32 p-2 border rounded mb-4" placeholder="Paste Resume here..."></textarea>
+                
+                <label class="block font-bold mb-2">GitHub Username</label>
+                <input id="github" type="text" class="w-full p-2 border rounded mb-4" placeholder="e.g. octocat">
+                
+                <button onclick="runAnalysis()" class="w-full bg-blue-600 text-white font-bold py-3 rounded hover:bg-blue-700">
+                    Run AI Analysis
+                </button>
+            </div>
+
+            <div id="results" class="bg-gray-50 p-6 border rounded hidden">
+                <h2 class="text-xl font-bold mb-4 border-b pb-2">Analysis Results</h2>
+                
+                <div class="mb-4">
+                    <span class="font-bold">Match Score:</span>
+                    <div class="text-4xl font-black text-green-600" id="res-score">0%</div>
+                </div>
+
+                <div class="mb-4">
+                    <span class="font-bold text-red-600">JD Audit (Bias Check):</span>
+                    <ul id="res-audit" class="list-disc ml-5 text-sm"></ul>
+                </div>
+
+                <div class="mb-4">
+                    <span class="font-bold">Blinded Resume (Anti-Bias):</span>
+                    <div id="res-blinded" class="text-xs italic bg-white p-2 border overflow-y-auto h-24"></div>
+                </div>
+
+                <div>
+                    <span class="font-bold">Practical Skills (Verified):</span>
+                    <div id="res-github" class="text-sm bg-blue-100 p-2 rounded mt-1"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function runAnalysis() {
+            const data = {
+                jd: document.getElementById('jd').value,
+                resume: document.getElementById('resume').value,
+                github: document.getElementById('github').value
+            };
+
+            const response = await fetch('/analyze', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            document.getElementById('results').classList.remove('hidden');
+            document.getElementById('res-score').innerText = result.score + "%";
+            document.getElementById('res-blinded').innerText = result.blinded;
+            document.getElementById('res-github').innerText = `Top Languages: ${result.github.top_languages.join(', ')} (${result.github.repo_count} repos)`;
+            
+            const auditList = document.getElementById('res-audit');
+            auditList.innerHTML = '';
+            result.audit.flags.forEach(flag => {
+                let li = document.createElement('li');
+                li.innerText = `Flagged term: "${flag}"`;
+                auditList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
