@@ -1,0 +1,7 @@
+presidio-analyzer
+presidio-anonymizer
+sentence-transformers
+spacy
+web3
+requests
+python-dotenv
