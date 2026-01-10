@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentRank AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 overflow-x-hidden">
+
+    <!-- Section 1: Simple Welcome Page -->
+    <div id="view-landing" class="min-h-screen flex flex-col items-center justify-center bg-white">
+        <div class="text-center space-y-8">
+            <h1 class="text-6xl font-black text-slate-900 tracking-tight">Welcome</h1>
+            <p class="text-slate-500 font-medium">Access the TalentRank AI recruitment dashboard.</p>
+            <button onclick="showDashboard()" class="px-12 py-5 bg-blue-600 text-white rounded-2xl font-bold text-xl shadow-2xl shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95">
+                Access Dashboard
+            </button>
+        </div>
+    </div>
+
+    <!-- Section 2: Dashboard Application -->
+    <div id="view-dashboard" class="hidden">
+        <nav class="border-b border-slate-200 bg-white sticky top-0 z-50">
+            <div class="max-w-screen-2xl mx-auto px-6 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="showLanding()">
+                    <span class="text-xl font-extrabold tracking-tight text-slate-800">TalentRank <span class="text-blue-600">AI</span></span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="showLanding()" class="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors uppercase tracking-wider">Sign Out</button>
+                    <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-wider">Enterprise Mode</span>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-screen-2xl mx-auto p-6 lg:p-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Sidebar -->
+                <div class="lg:col-span-3 space-y-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h2 class="text-sm font-bold text-slate-800 uppercase tracking-widest mb-6 border-b pb-2">Analysis Config</h2>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">1. Job Description</label>
+                                <textarea id="jd" class="w-full h-40 p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none resize-none" placeholder="Paste technical requirements..."></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">2. Mandatory Skills</label>
+                                <input type="text" id="mandatory" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none" placeholder="e.g. Python, AWS, Docker">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">3. Source Resumes</label>
+                                <div class="relative group">
+                                    <input type="file" id="resumes" multiple accept=".pdf,.docx" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                    <div class="p-4 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 group-hover:bg-blue-50 group-hover:border-blue-200 transition-all text-center">
+                                        <svg class="w-6 h-6 mx-auto text-slate-400 group-hover:text-blue-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                                        <span class="text-[10px] font-bold text-slate-500 uppercase">Select PDF/DOCX</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onclick="runAnalysis()" id="btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-200 transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                                <span>Rank Candidates</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 p-5 rounded-2xl text-white">
+                        <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Ranking Weights</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-300">Technical Skills</span>
+                                <span class="font-bold">40%</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-300">Industry Experience</span>
+                                <span class="font-bold">20%</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-300">Semantic Fit</span>
+                                <span class="font-bold">20%</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-300">Verification</span>
+                                <span class="font-bold">20%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Area -->
+                <div class="lg:col-span-9">
+                    <div id="empty-state" class="bg-white border border-dashed border-slate-300 rounded-3xl p-20 text-center">
+                        <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-300">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">Awaiting Data</h3>
+                        <p class="text-slate-500 mt-2 max-w-xs mx-auto text-sm">Upload candidate resumes and configure requirements to generate analysis.</p>
+                    </div>
+
+                    <div id="results-container" class="hidden space-y-4">
+                        <div class="overflow-hidden bg-white rounded-3xl shadow-sm border border-slate-200">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50 border-b border-slate-100 uppercase text-[10px] font-bold text-slate-400 tracking-[0.2em]">
+                                        <th class="p-5 w-16">Compare</th>
+                                        <th class="p-5 w-16 text-center">Rank</th>
+                                        <th class="p-5">Candidate Intelligence</th>
+                                        <th class="p-5 text-center">Experience</th>
+                                        <th class="p-5 text-center">Score</th>
+                                        <th class="p-5">Skill Audit</th>
+                                        <th class="p-5">Verification</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaderboard-body" class="divide-y divide-slate-50"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Comparison Modal -->
+    <button id="compare-trigger" onclick="openCompare()" class="fixed bottom-10 right-10 bg-blue-600 text-white px-10 py-5 rounded-full shadow-2xl font-black text-sm hidden hover:bg-blue-700 transition-all transform hover:scale-105 z-40 ring-4 ring-blue-100">
+        COMPARE SELECTED (0)
+    </button>
+
+    <div id="compare-modal" class="fixed inset-0 bg-slate-900/80 hidden flex items-center justify-center z-50 p-6 backdrop-blur-md">
+        <div class="bg-white rounded-[2.5rem] shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-8 border-b flex justify-between items-center sticky top-0 bg-white z-10">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">Technical Comparison</h2>
+                    <p class="text-slate-500 text-sm">Reviewing top candidates based on weighted criteria</p>
+                </div>
+                <button onclick="closeCompare()" class="w-12 h-12 flex items-center justify-center rounded-full bg-slate-100 hover:bg-red-50 hover:text-red-600 transition-all text-2xl">&times;</button>
+            </div>
+            <div class="p-10 grid grid-cols-1 md:grid-cols-2 gap-12" id="compare-content"></div>
+        </div>
+    </div>
+
+    <script>
+        function showDashboard() {
+            document.getElementById('view-landing').classList.add('hidden');
+            document.getElementById('view-dashboard').classList.remove('hidden');
+        }
+
+        function showLanding() {
+            document.getElementById('view-landing').classList.remove('hidden');
+            document.getElementById('view-dashboard').classList.add('hidden');
+        }
+
+        let lastResultData = [];
+
+        async function runAnalysis() {
+            const btn = document.getElementById('btn');
+            const emptyState = document.getElementById('empty-state');
+            const resultsContainer = document.getElementById('results-container');
+            
+            btn.innerText = "Analyzing...";
+            btn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('jd', document.getElementById('jd').value);
+            formData.append('mandatory_skills', document.getElementById('mandatory').value);
+            
+            const files = document.getElementById('resumes').files;
+            if (files.length === 0) {
+                alert("Please upload candidate resumes.");
+                btn.innerText = "Rank Candidates";
+                btn.disabled = false;
+                return;
+            }
+
+            for(let i=0; i<files.length; i++) { formData.append('resumes', files[i]); }
+
+            try {
+                const response = await fetch('/analyze', { method: 'POST', body: formData });
+                const result = await response.json();
+                lastResultData = result.candidates;
+
+                emptyState.classList.add('hidden');
+                resultsContainer.classList.remove('hidden');
+                
+                const tbody = document.getElementById('leaderboard-body');
+                tbody.innerHTML = '';
+                
+                result.candidates.forEach((c, index) => {
+                    const mandatoryHtml = c.missing_mandatory.length > 0 
+                        ? c.missing_mandatory.map(s => `<div class="text-[9px] font-black text-red-600 uppercase mb-1 flex items-center gap-1"><span class="w-1 h-1 bg-red-600 rounded-full"></span> REQUIRED: ${s}</div>`).join('')
+                        : '';
+
+                    const gapHtml = c.skill_gap.length > 0 
+                        ? c.skill_gap.map(s => `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-red-50 text-red-700 mr-1 mb-1 border border-red-100 uppercase italic">✗ ${s}</span>`).join('') 
+                        : '<span class="text-emerald-600 font-bold text-xs flex items-center uppercase tracking-wider">✓ Certified Match</span>';
+
+                    const row = `
+                        <tr class="hover:bg-slate-50 transition-colors group">
+                            <td class="p-6 text-center">
+                                <input type="checkbox" class="candidate-select w-6 h-6 rounded-lg border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer transition-all" 
+                                       data-name="${c.name}" onchange="updateCompareCount()">
+                            </td>
+                            <td class="p-6 text-center">
+                                <div class="text-xl font-black ${index < 3 ? 'text-blue-600' : 'text-slate-300'}">#${index + 1}</div>
+                            </td>
+                            <td class="p-6">
+                                <div class="font-bold text-slate-800 text-base">${c.name}</div>
+                                <div class="text-[10px] text-blue-600 font-mono mb-2">${c.profiles.linkedin}</div>
+                                
+                                <div class="mt-3 p-3 bg-blue-50/50 rounded-xl border-l-4 border-blue-600">
+                                    <div class="flex items-center gap-1 mb-1">
+                                        <svg class="w-3 h-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1a1 1 0 112 0v1a1 1 0 11-2 0zM13.536 14.243a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM16.243 16.243a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414z"></path></svg>
+                                        <span class="text-[9px] font-black uppercase text-blue-700 tracking-[0.15em]">AI Insight</span>
+                                    </div>
+                                    <p class="text-xs text-slate-700 italic leading-relaxed">"${c.summary}"</p>
+                                </div>
+                            </td>
+                            <td class="p-6 text-center">
+                                <div class="text-sm font-bold text-slate-700">${c.years_exp} Yrs</div>
+                                <div class="text-[9px] text-slate-400 font-bold uppercase tracking-tighter">Seniority</div>
+                            </td>
+                            <td class="p-6 text-center">
+                                <div class="inline-flex flex-col items-center justify-center w-14 h-14 rounded-full border-2 ${c.score > 75 ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-blue-100 bg-blue-50 text-blue-700'}">
+                                    <span class="text-xs font-black">${c.score}%</span>
+                                </div>
+                            </td>
+                            <td class="p-6">
+                                ${mandatoryHtml}
+                                <div class="mt-2">${gapHtml}</div>
+                            </td>
+                            <td class="p-6">
+                                <div class="text-[10px] font-bold text-slate-700 uppercase">${c.github.top_languages ? c.github.top_languages.slice(0,3).join(', ') : 'No Verification'}</div>
+                                <div class="text-[9px] text-slate-400 mt-1 font-semibold">${c.github.repo_count || 0} Repos Found</div>
+                            </td>
+                        </tr>`;
+                    tbody.innerHTML += row;
+                });
+            } catch (e) {
+                console.error(e);
+            } finally {
+                btn.innerText = "Rank Candidates";
+                btn.disabled = false;
+                updateCompareCount();
+            }
+        }
+
+        function updateCompareCount() {
+            const checked = document.querySelectorAll('.candidate-select:checked');
+            const trigger = document.getElementById('compare-trigger');
+            trigger.innerText = `COMPARE SELECTED (${checked.length})`;
+            trigger.style.display = checked.length === 2 ? 'block' : 'none';
+        }
+
+        function openCompare() {
+            const checkedNames = Array.from(document.querySelectorAll('.candidate-select:checked')).map(el => el.getAttribute('data-name'));
+            const candidates = lastResultData.filter(c => checkedNames.includes(c.name));
+            const container = document.getElementById('compare-content');
+            container.innerHTML = '';
+
+            candidates.forEach((c) => {
+                const mandatoryGap = c.missing_mandatory.length > 0 
+                    ? `<div class="bg-red-50 p-3 rounded-xl border border-red-100 text-red-600 font-bold text-[10px] uppercase mb-4">Must-Have Gaps: ${c.missing_mandatory.join(', ')}</div>`
+                    : '';
+
+                const interviewPrep = c.interview_prep && c.interview_prep.length > 0
+                    ? c.interview_prep.slice(0, 3).map(q => `<li class="text-xs text-slate-700 leading-relaxed font-medium pb-2 border-b border-blue-100/50 mb-2 last:border-0 last:mb-0">Q: ${q}</li>`).join('')
+                    : '<li class="text-xs text-emerald-600 font-bold italic">Requirements met. Verify cultural alignment.</li>';
+
+                container.innerHTML += `
+                    <div class="space-y-8">
+                        <div class="text-center pb-8 border-b border-slate-100">
+                            <div class="text-6xl font-black text-blue-600 mb-3">${c.score}%</div>
+                            <h3 class="font-extrabold text-2xl text-slate-800">${c.name}</h3>
+                            <div class="inline-block mt-3 px-4 py-1.5 bg-blue-100 text-blue-700 text-[10px] font-black rounded-full uppercase tracking-[0.2em]">
+                                ${c.years_exp} Years Seniority
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Tech Presence</h4>
+                            <div class="flex flex-wrap gap-2">
+                                ${c.github.top_languages ? c.github.top_languages.map(l => `<span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider">${l}</span>`).join('') : '<span class="text-slate-400 text-xs">Unverified</span>'}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-[10px] font-black text-red-400 uppercase tracking-widest mb-4">Critical Gaps</h4>
+                            <div class="space-y-1">
+                                ${mandatoryGap}
+                                ${c.skill_gap.length > 0 ? c.skill_gap.map(s => `<div class="text-xs text-red-600 font-bold flex items-center gap-2 italic uppercase">✗ ${s}</div>`).join('') : '<div class="text-emerald-600 text-xs font-bold uppercase tracking-widest">✓ No Technical Gaps</div>'}
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-600 p-6 rounded-[2rem] shadow-xl shadow-blue-100">
+                            <h4 class="font-black text-white uppercase text-[10px] tracking-[0.2em] mb-4 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path></svg>
+                                Interview Prep
+                            </h4>
+                            <ul class="bg-white/95 p-5 rounded-2xl">
+                                ${interviewPrep}
+                            </ul>
+                        </div>
+                    </div>`;
+            });
+            document.getElementById('compare-modal').classList.remove('hidden');
+        }
+
+        function closeCompare() { document.getElementById('compare-modal').classList.add('hidden'); }
+    </script>
+</body>
+</html>
